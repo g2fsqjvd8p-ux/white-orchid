@@ -367,7 +367,7 @@ const I18N = {
 
 let currentLang = localStorage.getItem("lang") || "it";
 
-const whatsappNumber = "390000000000";
+const whatsappNumber = "38267025711";
 const emailAddress = "bookings@whiteorchid.example";
 const yearEl = document.getElementById("year");
 if (yearEl) yearEl.textContent = new Date().getFullYear();
