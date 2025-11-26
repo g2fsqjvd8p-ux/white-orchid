@@ -76,6 +76,7 @@ const I18N = {
     contact_desc: "Call or message to book. Walk-ins welcome based on availability.",
     whatsapp_btn: "Message on WhatsApp",
     call_btn: "Call +382 67 025 711",
+    nav_schedule: "Today's Availability",
     footer_small: "Wellness & Health • Licensed practice",
     modal_title: "Book a Session",
     label_name: "Full Name",
@@ -98,6 +99,14 @@ const I18N = {
     label_summary_preferred: "Preferred",
     label_summary_notes: "Notes",
     whatsapp_msg: "Hello! I'd like to book a Thai massage. Could you share availability?",
+    schedule_heading: "Today's Availability",
+    table_time: "Time",
+    table_status: "Status",
+    schedule_free: "Free",
+    schedule_booked: "Booked",
+    schedule_start_label: "Start",
+    schedule_end_label: "End",
+    schedule_slot_label: "Slot",
     services: {
       "thai-classic": {
         name: "Traditional Thai Massage",
@@ -155,6 +164,7 @@ const I18N = {
     contact_desc: "Chiama o scrivi per prenotare. Ingresso senza appuntamento in base alla disponibilità.",
     whatsapp_btn: "Messaggio su WhatsApp",
     call_btn: "Chiama +382 67 025 711",
+    nav_schedule: "Disponibilità di oggi",
     footer_small: "Benessere & Salute • Attività autorizzata",
     modal_title: "Prenota una sessione",
     label_name: "Nome completo",
@@ -177,6 +187,14 @@ const I18N = {
     label_summary_preferred: "Preferito",
     label_summary_notes: "Note",
     whatsapp_msg: "Ciao! Vorrei prenotare un massaggio thai. Avete disponibilità?",
+    schedule_heading: "Disponibilità di oggi",
+    table_time: "Orario",
+    table_status: "Stato",
+    schedule_free: "Libero",
+    schedule_booked: "Occupato",
+    schedule_start_label: "Inizio",
+    schedule_end_label: "Fine",
+    schedule_slot_label: "Slot",
     services: {
       "thai-classic": {
         name: "Massaggio Thai Tradizionale",
@@ -234,6 +252,7 @@ const I18N = {
     contact_desc: "โทรหรือส่งข้อความเพื่อจอง รับลูกค้า Walk-in ตามคิวว่าง",
     whatsapp_btn: "ส่งข้อความทาง WhatsApp",
     call_btn: "โทร +382 67 025 711",
+    nav_schedule: "ตารางวันนี้",
     footer_small: "สุขภาพและความเป็นอยู่ที่ดี • สถานประกอบการมีใบอนุญาต",
     modal_title: "จองคอร์ส",
     label_name: "ชื่อ-นามสกุล",
@@ -256,6 +275,14 @@ const I18N = {
     label_summary_preferred: "ต้องการ",
     label_summary_notes: "หมายเหตุ",
     whatsapp_msg: "สวัสดี ต้องการจองนวดไทย รบกวนแจ้งเวลาว่างด้วย",
+    schedule_heading: "ตารางวันนี้",
+    table_time: "เวลา",
+    table_status: "สถานะ",
+    schedule_free: "ว่าง",
+    schedule_booked: "จองแล้ว",
+    schedule_start_label: "เริ่ม",
+    schedule_end_label: "สิ้นสุด",
+    schedule_slot_label: "ช่วง",
     services: {
       "thai-classic": {
         name: "นวดไทยแบบดั้งเดิม",
@@ -313,6 +340,7 @@ const I18N = {
     contact_desc: "Pozovite ili pošaljite poruku za rezervaciju. Dolazak bez zakazivanja po dostupnosti.",
     whatsapp_btn: "Poruka na WhatsApp",
     call_btn: "Pozovi +382 67 025 711",
+    nav_schedule: "Današnja dostupnost",
     footer_small: "Zdravlje i wellness • Licencirana praksa",
     modal_title: "Zakaži termin",
     label_name: "Ime i prezime",
@@ -335,6 +363,14 @@ const I18N = {
     label_summary_preferred: "Željeno",
     label_summary_notes: "Napomena",
     whatsapp_msg: "Zdravo! Želeo/la bih da zakažem tajlandsku masažu. Imate li slobodnih termina?",
+    schedule_heading: "Današnja dostupnost",
+    table_time: "Vreme",
+    table_status: "Status",
+    schedule_free: "Slobodno",
+    schedule_booked: "Zauzeto",
+    schedule_start_label: "Početak",
+    schedule_end_label: "Kraj",
+    schedule_slot_label: "Slot",
     services: {
       "thai-classic": {
         name: "Tradicionalna tajlandska masaža",
@@ -378,12 +414,49 @@ const closeBtn = document.getElementById("modal-close");
 const clearBtn = document.getElementById("clear-form");
 const serviceSelect = document.getElementById("service-select");
 const durationSelect = document.getElementById("duration-select");
+const timeSelect = document.getElementById("time-select");
 const servicesGrid = document.getElementById("services-grid");
 const filtersEl = document.getElementById("filters");
 const whatsappLink = document.getElementById("whatsapp-link");
 const ctaBook = document.getElementById("cta-book");
 const heroBook = document.getElementById("hero-book");
 const langSelect = document.getElementById("lang-select");
+const scheduleStartEl = document.getElementById("schedule-start");
+const scheduleEndEl = document.getElementById("schedule-end");
+const scheduleSlotEl = document.getElementById("schedule-slot");
+
+const SCHEDULE_STORE_KEY = "schedule_config";
+const DEFAULT_SCHEDULE = { startHour: 10, endHour: 21, slotMinutes: 30 };
+function getScheduleConfig() {
+  try {
+    const raw = localStorage.getItem(SCHEDULE_STORE_KEY);
+    const cfg = raw ? JSON.parse(raw) : DEFAULT_SCHEDULE;
+    const s = Number(cfg.startHour) || DEFAULT_SCHEDULE.startHour;
+    const e = Number(cfg.endHour) || DEFAULT_SCHEDULE.endHour;
+    const m = Number(cfg.slotMinutes) || DEFAULT_SCHEDULE.slotMinutes;
+    return { startHour: s, endHour: e, slotMinutes: m };
+  } catch {
+    return DEFAULT_SCHEDULE;
+  }
+}
+function setScheduleConfig(next) {
+  const cur = getScheduleConfig();
+  const merged = { ...cur, ...next };
+  localStorage.setItem(SCHEDULE_STORE_KEY, JSON.stringify(merged));
+  initScheduleControls();
+  renderSchedule();
+}
+function initScheduleControls() {
+  if (!scheduleStartEl || !scheduleEndEl || !scheduleSlotEl) return;
+  const cfg = getScheduleConfig();
+  const hours = Array.from({ length: 15 }, (_, i) => 8 + i);
+  scheduleStartEl.innerHTML = hours.map(h => `<option value="${h}">${String(h).padStart(2,"0")}:00</option>`).join("");
+  scheduleEndEl.innerHTML = hours.map(h => `<option value="${h}">${String(h).padStart(2,"0")}:00</option>`).join("");
+  scheduleSlotEl.innerHTML = [15,30,60].map(m => `<option value="${m}">${m} min</option>`).join("");
+  scheduleStartEl.value = String(cfg.startHour);
+  scheduleEndEl.value = String(cfg.endHour);
+  scheduleSlotEl.value = String(cfg.slotMinutes);
+}
 
 function t(key) {
   const pack = I18N[currentLang] || I18N.en;
@@ -415,8 +488,11 @@ function applyTranslations() {
     if (key) el.textContent = t(key);
   });
   setWhatsAppLink();
+  initScheduleControls();
   renderServices(filtersEl.querySelector('.chip.active')?.dataset.filter || "all");
   populateServiceSelect(serviceSelect.value || null);
+  setDefaultDateToday();
+  renderSchedule();
 }
 
 function setLang(lang) {
@@ -471,14 +547,20 @@ function populateDurationSelect(serviceId) {
     const label = d === 0 ? t("addon_label") : `${d} min`;
     return `<option value="${d}">${label} (${s.prices[d]})</option>`;
   }).join("");
+  populateAvailableTimes();
 }
 
 function openBooking(serviceId = null) {
   populateServiceSelect(serviceId);
+  setDefaultDateToday();
+  populateAvailableTimes();
   modal.showModal();
 }
 
 serviceSelect.addEventListener("change", (e) => populateDurationSelect(e.target.value));
+durationSelect.addEventListener("change", () => populateAvailableTimes());
+const dateInput = document.querySelector('input[name="date"]');
+if (dateInput) dateInput.addEventListener("change", () => populateAvailableTimes());
 closeBtn.addEventListener("click", () => modal.close());
 clearBtn.addEventListener("click", () => form.reset());
 [ctaBook, heroBook].forEach(b => b && b.addEventListener("click", () => openBooking()));
@@ -522,6 +604,7 @@ ${t("label_summary_notes")}: ${notes || "-"}
 
   const mailto = `mailto:${emailAddress}?subject=${encodeURIComponent(t("mail_subject_prefix") + ts(service.id, "name", service.name))}&body=${encodeURIComponent(summary)}`;
   window.location.href = mailto;
+  saveBooking({ date, start: time, minutes: duration === "0" ? 60 : Number(duration) });
   modal.close();
 });
 
@@ -531,3 +614,106 @@ function setWhatsAppLink() {
 }
 
 applyTranslations();
+
+function setDefaultDateToday() {
+  const input = document.querySelector('input[name="date"]');
+  if (!input) return;
+  if (input.value) return;
+  const d = new Date();
+  const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  input.value = iso;
+}
+
+function populateAvailableTimes() {
+  if (!timeSelect) return;
+  const cfg = getScheduleConfig();
+  const date = (document.querySelector('input[name="date"]')?.value) || (() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  })();
+  const dur = Number(durationSelect.value || 60);
+  const durationMin = dur === 0 ? 60 : dur;
+  const startMin = cfg.startHour * 60;
+  const endMin = cfg.endHour * 60;
+  const step = cfg.slotMinutes;
+  const appts = getAppointmentsForDate(date);
+  const toStr = n => String(Math.floor(n / 60)).padStart(2, "0") + ":" + String(n % 60).padStart(2, "0");
+  const free = [];
+  for (let t = startMin; t + durationMin <= endMin; t += step) {
+    const s = toStr(t);
+    const e = toStr(t + durationMin);
+    const overlaps = appts.some(a => toMinutes(a.start) < t + durationMin && toMinutes(a.end) > t);
+    if (!overlaps) free.push({ start: s, end: e });
+  }
+  timeSelect.innerHTML = free.map(x => `<option value="${x.start}">${x.start}–${x.end}</option>`).join("");
+}
+
+function toMinutes(hhmm) {
+  const [h, m] = hhmm.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function getAppointmentsForDate(iso) {
+  try {
+    const raw = localStorage.getItem("bookings");
+    const list = raw ? JSON.parse(raw) : [];
+    return list.filter(b => b.date === iso);
+  } catch {
+    return [];
+  }
+}
+
+function saveBooking(b) {
+  try {
+    const raw = localStorage.getItem("bookings");
+    const list = raw ? JSON.parse(raw) : [];
+    const end = (() => {
+      const [h,m] = b.start.split(":").map(Number);
+      const total = h*60 + m + Number(b.minutes);
+      const eh = Math.floor(total/60);
+      const em = total % 60;
+      return String(eh).padStart(2,"0") + ":" + String(em).padStart(2,"0");
+    })();
+    list.push({ date: b.date, start: b.start, end });
+    localStorage.setItem("bookings", JSON.stringify(list));
+    renderSchedule();
+  } catch {}
+}
+function renderSchedule() {
+  const tbody = document.getElementById("schedule-body");
+  if (!tbody) return;
+  const cfg = getScheduleConfig();
+  const start = cfg.startHour * 60;
+  const end = cfg.endHour * 60;
+  const slot = cfg.slotMinutes;
+  const appts = getTodayAppointments();
+  const toMin = s => {
+    const [h, m] = s.split(":").map(Number);
+    return h * 60 + m;
+  };
+  const toStr = n => String(Math.floor(n / 60)).padStart(2, "0") + ":" + String(n % 60).padStart(2, "0");
+  tbody.innerHTML = "";
+  for (let tMin = start; tMin < end; tMin += slot) {
+    const s = toStr(tMin);
+    const e = toStr(Math.min(tMin + slot, end));
+    const booked = appts.some(a => toMin(a.start) < tMin + slot && toMin(a.end) > tMin);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${s}–${e}</td><td class="${booked ? "status-booked" : "status-free"}">${booked ? t("schedule_booked") : t("schedule_free")}</td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function getTodayAppointments() {
+  try {
+    const raw = localStorage.getItem("bookings");
+    const list = raw ? JSON.parse(raw) : [];
+    const today = new Date();
+    const y = today.getFullYear();
+    const m = String(today.getMonth()+1).padStart(2,"0");
+    const d = String(today.getDate()).padStart(2,"0");
+    const iso = `${y}-${m}-${d}`;
+    return list.filter(b => b.date === iso).map(b => ({ start: b.start, end: b.end }));
+  } catch {
+    return [];
+  }
+}
