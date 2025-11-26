@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title data-i18n="title">White Orchid Thai Massage</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Authentic Thai massage services. Traditional Thai, Foot Reflexology, Oil Relaxation, Couples massage, and more. Book your session today." data-i18n-meta="meta_description">
+  <meta property="og:title" content="White Orchid Thai Massage">
+  <meta property="og:description" content="Authentic Thai massage services with certified therapists. Book now.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌸</text></svg>">
+  <meta name="theme-color" content="#7a3cff">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="logo">🌸</span>
+        <span class="name">White Orchid</span>
+      </div>
+      <nav class="nav">
+        <a href="#services" data-i18n="nav_services">Services</a>
+        <a href="#about" data-i18n="nav_about">About</a>
+        <a href="#contact" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select">
+          <option value="en">English</option>
+          <option value="it">Italiano</option>
+          <option value="th">ไทย</option>
+          <option value="sr">Srpski</option>
+        </select>
+        <button class="btn primary" id="cta-book" data-i18n="book_now">Book Now</button>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-inner">
+      <h1 data-i18n="hero_title">Restore Balance with Authentic Thai Massage</h1>
+      <p data-i18n="hero_desc">Certified therapists. Clean, calm space. Personalized treatments to relieve tension and improve mobility.</p>
+      <div class="hero-actions">
+        <button class="btn primary" id="hero-book" data-i18n="hero_book">Book a Session</button>
+        <a class="btn ghost" href="#services" data-i18n="view_services">View Services</a>
+      </div>
+      <figure class="hero-media">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Thaimassage.jpg"
+          alt="Thai massage session"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption class="credit">
+          Photo: Bhattharasinthorn Kosawan & Chot-Anan Kittiraweechot ·
+          <a href="https://commons.wikimedia.org/wiki/File:Thaimassage.jpg" target="_blank" rel="noopener">Wikimedia Commons</a> ·
+          <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="filters">
+    <div class="container">
+      <div class="filter-list" id="filters">
+        <button class="chip active" data-filter="all" data-i18n="chip_all">All</button>
+        <button class="chip" data-filter="thai" data-i18n="chip_thai">Thai</button>
+        <button class="chip" data-filter="oil" data-i18n="chip_oil">Oil</button>
+        <button class="chip" data-filter="foot" data-i18n="chip_foot">Foot</button>
+        <button class="chip" data-filter="couples" data-i18n="chip_couples">Couples</button>
+        <button class="chip" data-filter="add-ons" data-i18n="chip_addons">Add-ons</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="services">
+    <div class="container">
+      <h2 data-i18n="services_heading">Our Services</h2>
+      <div id="services-grid" class="grid"></div>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <div class="container about-inner">
+      <div>
+        <h2 data-i18n="about_heading">About Us</h2>
+        <p data-i18n="about_desc">We offer traditional Thai techniques blended with modern bodywork to help you feel your best. Our therapists are trained and certified.</p>
+        <ul class="bullets">
+          <li data-i18n="about_bullet_1">Certified Thai massage therapists</li>
+          <li data-i18n="about_bullet_2">Clean, relaxing environment</li>
+          <li data-i18n="about_bullet_3">Personalized treatments</li>
+        </ul>
+      </div>
+      <div class="card note">
+        <h3 data-i18n="hours_label">Opening Hours</h3>
+        <p>Mon–Sun: 10:00–20:00</p>
+        <h3 data-i18n="location_label">Location</h3>
+        <p>123 Orchid Street, City</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="container">
+      <h2 data-i18n="contact_heading">Contact</h2>
+      <p data-i18n="contact_desc">Call or message to book. Walk-ins welcome based on availability.</p>
+      <div class="contact-actions">
+        <a class="btn secondary" id="whatsapp-link" href="#" target="_blank" rel="noopener" data-i18n="whatsapp_btn">Message on WhatsApp</a>
+        <a class="btn ghost" href="tel:+390000000000" data-i18n="call_btn">Call +39 000 000 0000</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© <span id="year"></span> White Orchid Thai Massage</div>
+      <div class="small" data-i18n="footer_small">Wellness & Health • Licensed practice</div>
+    </div>
+  </footer>
+
+  <dialog id="booking-modal" class="modal">
+    <form id="booking-form" method="dialog" class="modal-content">
+      <header class="modal-header">
+        <h3 data-i18n="modal_title">Book a Session</h3>
+        <button type="button" class="icon-btn" id="modal-close">✕</button>
+      </header>
+      <div class="form-grid">
+        <label>
+          <span data-i18n="label_name">Full Name</span>
+          <input type="text" name="name" required placeholder="Your name">
+        </label>
+        <label>
+          <span data-i18n="label_phone">Phone</span>
+          <input type="tel" name="phone" required placeholder="+39 ...">
+        </label>
+        <label>
+          <span data-i18n="label_date">Preferred Date</span>
+          <input type="date" name="date" required>
+        </label>
+        <label>
+          <span data-i18n="label_time">Preferred Time</span>
+          <input type="time" name="time" required>
+        </label>
+        <label>
+          <span data-i18n="label_service">Service</span>
+          <select name="service" id="service-select" required></select>
+        </label>
+        <label>
+          <span data-i18n="label_duration">Duration</span>
+          <select name="duration" id="duration-select" required></select>
+        </label>
+        <label class="full">
+          <span data-i18n="label_notes">Notes</span>
+          <textarea name="notes" rows="3" placeholder="Areas of focus, preferences..."></textarea>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn ghost" type="button" id="clear-form" data-i18n="btn_clear">Clear</button>
+        <button class="btn primary" type="submit" data-i18n="btn_submit">Request Booking</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HealthAndBeautyBusiness",
+    "name": "White Orchid Thai Massage",
+    "address": { "@type": "PostalAddress", "streetAddress": "123 Orchid Street", "addressLocality": "City", "addressCountry": "IT" },
+    "telephone": "+39 000 000 0000",
+    "openingHours": "Mo-Su 10:00-20:00",
+    "priceRange": "€€",
+    "sameAs": []
+  }
+  </script>
+  <script src="script.js" defer></script>
+</body>
+</html>
