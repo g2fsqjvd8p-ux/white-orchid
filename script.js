@@ -404,7 +404,7 @@ const I18N = {
 let currentLang = localStorage.getItem("lang") || "en";
 
 const whatsappNumber = "38267025711";
-const emailAddress = "bookings@whiteorchid.example";
+const emailAddress = "sfghbvnjj@gmail.com";
 const yearEl = document.getElementById("year");
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
