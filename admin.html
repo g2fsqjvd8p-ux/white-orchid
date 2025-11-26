@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Admin • White Orchid</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand"><span class="logo">🌸</span><span class="name">White Orchid</span></div>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+      </nav>
+    </div>
+  </header>
+  <section class="services">
+    <div class="container">
+      <h2>Appointment Admin</h2>
+      <div class="card">
+        <div class="card-body">
+          <div class="schedule-controls">
+            <label>
+              <span>Date</span>
+              <input type="date" id="admin-date">
+            </label>
+            <div style="flex:1"></div>
+            <button class="btn ghost" id="export-json">Export JSON</button>
+            <button class="btn" id="clear-cancelled">Clear Cancelled</button>
+          </div>
+          <table class="schedule-table" id="admin-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Duration</th>
+                <th>Service</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Notes</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+  <dialog id="admin-auth" class="modal">
+    <form method="dialog" class="modal-content">
+      <header class="modal-header">
+        <h3>Admin Login</h3>
+        <button type="button" class="icon-btn" id="admin-auth-close">✕</button>
+      </header>
+      <div class="form-grid">
+        <div class="full">
+          <p class="small">Enter admin credentials</p>
+        </div>
+        <label>
+          <span>Username</span>
+          <input type="text" id="admin-user" placeholder="admin">
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" id="admin-pass" placeholder="••••••">
+        </label>
+        <div class="full" id="admin-auth-error" style="color:#ef4444"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" type="button" id="admin-login-btn">Login</button>
+      </div>
+    </form>
+  </dialog>
+  <script src="admin.js" defer></script>
+</body>
+</html>
