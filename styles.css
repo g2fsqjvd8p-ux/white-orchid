@@ -79,6 +79,7 @@ a { color: var(--accent); text-decoration: none }
 .schedule-table th, .schedule-table td { text-align: left; padding: 10px; border-top: 1px solid var(--border) }
 .status-free { color: var(--good) }
 .status-booked { color: var(--danger) }
+.status-pending { color: var(--accent) }
 
 .site-footer { border-top:1px solid var(--border); padding: 16px 0; color: var(--muted) }
 .footer-inner { display:flex; align-items:center; justify-content:space-between }

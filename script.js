@@ -4,8 +4,8 @@ const SERVICES = [
     name: "Traditional Thai Massage",
     desc: "Yoga-like stretches and acupressure to improve mobility and relieve deep tension.",
     category: ["thai"],
-    durations: [60, 90],
-    prices: { 60: "€60", 90: "€85" },
+    durations: [60, 90, 120],
+    prices: { 60: "€40", 90: "€60", 120: "€80" },
     tags: ["Full body", "Stretching", "No oil"]
   },
   {
@@ -13,8 +13,8 @@ const SERVICES = [
     name: "Oil Relaxation Massage",
     desc: "Gentle, flowing massage with warm oil to relax the nervous system.",
     category: ["oil"],
-    durations: [60, 90],
-    prices: { 60: "€65", 90: "€90" },
+    durations: [60, 90, 120],
+    prices: { 60: "€50", 90: "€75", 120: "90" },
     tags: ["Calming", "Aromatherapy"]
   },
   {
@@ -77,6 +77,7 @@ const I18N = {
     whatsapp_btn: "Message on WhatsApp",
     call_btn: "Call +382 67 025 711",
     nav_schedule: "Today's Availability",
+    nav_admin: "Admin",
     footer_small: "Wellness & Health • Licensed practice",
     modal_title: "Book a Session",
     label_name: "Full Name",
@@ -104,6 +105,7 @@ const I18N = {
     table_status: "Status",
     schedule_free: "Free",
     schedule_booked: "Booked",
+    schedule_pending: "Pending",
     schedule_start_label: "Start",
     schedule_end_label: "End",
     schedule_slot_label: "Slot",
@@ -165,6 +167,7 @@ const I18N = {
     whatsapp_btn: "Messaggio su WhatsApp",
     call_btn: "Chiama +382 67 025 711",
     nav_schedule: "Disponibilità di oggi",
+    nav_admin: "Admin",
     footer_small: "Benessere & Salute • Attività autorizzata",
     modal_title: "Prenota una sessione",
     label_name: "Nome completo",
@@ -192,6 +195,7 @@ const I18N = {
     table_status: "Stato",
     schedule_free: "Libero",
     schedule_booked: "Occupato",
+    schedule_pending: "In attesa",
     schedule_start_label: "Inizio",
     schedule_end_label: "Fine",
     schedule_slot_label: "Slot",
@@ -253,6 +257,7 @@ const I18N = {
     whatsapp_btn: "ส่งข้อความทาง WhatsApp",
     call_btn: "โทร +382 67 025 711",
     nav_schedule: "ตารางวันนี้",
+    nav_admin: "ผู้ดูแล",
     footer_small: "สุขภาพและความเป็นอยู่ที่ดี • สถานประกอบการมีใบอนุญาต",
     modal_title: "จองคอร์ส",
     label_name: "ชื่อ-นามสกุล",
@@ -280,6 +285,7 @@ const I18N = {
     table_status: "สถานะ",
     schedule_free: "ว่าง",
     schedule_booked: "จองแล้ว",
+    schedule_pending: "รอดำเนินการ",
     schedule_start_label: "เริ่ม",
     schedule_end_label: "สิ้นสุด",
     schedule_slot_label: "ช่วง",
@@ -341,6 +347,7 @@ const I18N = {
     whatsapp_btn: "Poruka na WhatsApp",
     call_btn: "Pozovi +382 67 025 711",
     nav_schedule: "Današnja dostupnost",
+    nav_admin: "Admin",
     footer_small: "Zdravlje i wellness • Licencirana praksa",
     modal_title: "Zakaži termin",
     label_name: "Ime i prezime",
@@ -368,6 +375,7 @@ const I18N = {
     table_status: "Status",
     schedule_free: "Slobodno",
     schedule_booked: "Zauzeto",
+    schedule_pending: "Na čekanju",
     schedule_start_label: "Početak",
     schedule_end_label: "Kraj",
     schedule_slot_label: "Slot",
@@ -604,7 +612,9 @@ ${t("label_summary_notes")}: ${notes || "-"}
 
   const mailto = `mailto:${emailAddress}?subject=${encodeURIComponent(t("mail_subject_prefix") + ts(service.id, "name", service.name))}&body=${encodeURIComponent(summary)}`;
   window.location.href = mailto;
-  saveBooking({ date, start: time, minutes: duration === "0" ? 60 : Number(duration) });
+  const payload = { date, start: time, minutes: duration === "0" ? 60 : Number(duration), name, phone, serviceId, notes, status: "pending" };
+  postBookingToBackend(payload);
+  saveBooking(payload);
   modal.close();
 });
 
@@ -636,16 +646,17 @@ function populateAvailableTimes() {
   const startMin = cfg.startHour * 60;
   const endMin = cfg.endHour * 60;
   const step = cfg.slotMinutes;
-  const appts = getAppointmentsForDate(date);
   const toStr = n => String(Math.floor(n / 60)).padStart(2, "0") + ":" + String(n % 60).padStart(2, "0");
-  const free = [];
-  for (let t = startMin; t + durationMin <= endMin; t += step) {
-    const s = toStr(t);
-    const e = toStr(t + durationMin);
-    const overlaps = appts.some(a => toMinutes(a.start) < t + durationMin && toMinutes(a.end) > t);
-    if (!overlaps) free.push({ start: s, end: e });
-  }
-  timeSelect.innerHTML = free.map(x => `<option value="${x.start}">${x.start}–${x.end}</option>`).join("");
+  fetchAppointments(date).then(appts => {
+    const free = [];
+    for (let t = startMin; t + durationMin <= endMin; t += step) {
+      const s = toStr(t);
+      const e = toStr(t + durationMin);
+      const overlaps = appts.some(a => toMinutes(a.start) < t + durationMin && toMinutes(a.end) > t);
+      if (!overlaps) free.push({ start: s, end: e });
+    }
+    timeSelect.innerHTML = free.map(x => `<option value="${x.start}">${x.start}–${x.end}</option>`).join("");
+  });
 }
 
 function toMinutes(hhmm) {
@@ -657,10 +668,22 @@ function getAppointmentsForDate(iso) {
   try {
     const raw = localStorage.getItem("bookings");
     const list = raw ? JSON.parse(raw) : [];
-    return list.filter(b => b.date === iso);
+    return list.filter(b => b.date === iso && b.status !== "cancelled");
   } catch {
     return [];
   }
+}
+
+function authHeader() {
+  try { return sessionStorage.getItem('admin_auth_header') || ''; } catch { return ''; }
+}
+
+function fetchAppointments(iso) {
+  const headers = {}; const h = authHeader(); if (h) headers.Authorization = h;
+  return fetch('/api/bookings?date=' + iso, { headers })
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(list => list.filter(b => b.status !== 'cancelled').map(b => ({ start: b.start, end: b.end, status: b.status || 'pending' })))
+    .catch(() => getAppointmentsForDate(iso));
 }
 
 function saveBooking(b) {
@@ -674,7 +697,8 @@ function saveBooking(b) {
       const em = total % 60;
       return String(eh).padStart(2,"0") + ":" + String(em).padStart(2,"0");
     })();
-    list.push({ date: b.date, start: b.start, end });
+    const id = Date.now().toString();
+    list.push({ id, date: b.date, start: b.start, end, name: b.name, phone: b.phone, serviceId: b.serviceId, minutes: b.minutes, notes: b.notes, status: b.status || "pending" });
     localStorage.setItem("bookings", JSON.stringify(list));
     renderSchedule();
   } catch {}
@@ -686,21 +710,27 @@ function renderSchedule() {
   const start = cfg.startHour * 60;
   const end = cfg.endHour * 60;
   const slot = cfg.slotMinutes;
-  const appts = getTodayAppointments();
   const toMin = s => {
     const [h, m] = s.split(":").map(Number);
     return h * 60 + m;
   };
   const toStr = n => String(Math.floor(n / 60)).padStart(2, "0") + ":" + String(n % 60).padStart(2, "0");
   tbody.innerHTML = "";
-  for (let tMin = start; tMin < end; tMin += slot) {
-    const s = toStr(tMin);
-    const e = toStr(Math.min(tMin + slot, end));
-    const booked = appts.some(a => toMin(a.start) < tMin + slot && toMin(a.end) > tMin);
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${s}–${e}</td><td class="${booked ? "status-booked" : "status-free"}">${booked ? t("schedule_booked") : t("schedule_free")}</td>`;
-    tbody.appendChild(tr);
-  }
+  const d = new Date();
+  const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  fetchAppointments(iso).then(appts => {
+    for (let tMin = start; tMin < end; tMin += slot) {
+      const s = toStr(tMin);
+      const e = toStr(Math.min(tMin + slot, end));
+      const hasConfirmed = appts.some(a => toMin(a.start) < tMin + slot && toMin(a.end) > tMin && a.status === 'confirmed');
+      const hasPending = appts.some(a => toMin(a.start) < tMin + slot && toMin(a.end) > tMin && a.status !== 'cancelled' && a.status !== 'confirmed');
+      const tr = document.createElement("tr");
+      const cls = hasConfirmed ? "status-booked" : (hasPending ? "status-pending" : "status-free");
+      const label = hasConfirmed ? t("schedule_booked") : (hasPending ? t("schedule_pending") : t("schedule_free"));
+      tr.innerHTML = `<td>${s}–${e}</td><td class="${cls}">${label}</td>`;
+      tbody.appendChild(tr);
+    }
+  });
 }
 
 function getTodayAppointments() {
@@ -712,8 +742,14 @@ function getTodayAppointments() {
     const m = String(today.getMonth()+1).padStart(2,"0");
     const d = String(today.getDate()).padStart(2,"0");
     const iso = `${y}-${m}-${d}`;
-    return list.filter(b => b.date === iso).map(b => ({ start: b.start, end: b.end }));
+    return list.filter(b => b.date === iso && b.status !== "cancelled").map(b => ({ start: b.start, end: b.end }));
   } catch {
     return [];
   }
+}
+
+function postBookingToBackend(b) {
+  try {
+    fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) }).catch(() => {});
+  } catch {}
 }
