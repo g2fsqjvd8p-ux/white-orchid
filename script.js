@@ -75,7 +75,7 @@ const I18N = {
     contact_heading: "Contact",
     contact_desc: "Call or message to book. Walk-ins welcome based on availability.",
     whatsapp_btn: "Message on WhatsApp",
-    call_btn: "Call +39 000 000 0000",
+    call_btn: "Call +382 67 025 711",
     footer_small: "Wellness & Health • Licensed practice",
     modal_title: "Book a Session",
     label_name: "Full Name",
@@ -154,7 +154,7 @@ const I18N = {
     contact_heading: "Contatti",
     contact_desc: "Chiama o scrivi per prenotare. Ingresso senza appuntamento in base alla disponibilità.",
     whatsapp_btn: "Messaggio su WhatsApp",
-    call_btn: "Chiama +39 000 000 0000",
+    call_btn: "Chiama +382 67 025 711",
     footer_small: "Benessere & Salute • Attività autorizzata",
     modal_title: "Prenota una sessione",
     label_name: "Nome completo",
@@ -233,7 +233,7 @@ const I18N = {
     contact_heading: "ติดต่อ",
     contact_desc: "โทรหรือส่งข้อความเพื่อจอง รับลูกค้า Walk-in ตามคิวว่าง",
     whatsapp_btn: "ส่งข้อความทาง WhatsApp",
-    call_btn: "โทร +39 000 000 0000",
+    call_btn: "โทร +382 67 025 711",
     footer_small: "สุขภาพและความเป็นอยู่ที่ดี • สถานประกอบการมีใบอนุญาต",
     modal_title: "จองคอร์ส",
     label_name: "ชื่อ-นามสกุล",
@@ -312,7 +312,7 @@ const I18N = {
     contact_heading: "Kontakt",
     contact_desc: "Pozovite ili pošaljite poruku za rezervaciju. Dolazak bez zakazivanja po dostupnosti.",
     whatsapp_btn: "Poruka na WhatsApp",
-    call_btn: "Pozovi +39 000 000 0000",
+    call_btn: "Pozovi +382 67 025 711",
     footer_small: "Zdravlje i wellness • Licencirana praksa",
     modal_title: "Zakaži termin",
     label_name: "Ime i prezime",
@@ -365,7 +365,7 @@ const I18N = {
   }
 };
 
-let currentLang = localStorage.getItem("lang") || "it";
+let currentLang = localStorage.getItem("lang") || "en";
 
 const whatsappNumber = "38267025711";
 const emailAddress = "bookings@whiteorchid.example";
