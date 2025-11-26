@@ -679,7 +679,9 @@ function authHeader() {
 }
 
 function fetchAppointments(iso) {
-  const headers = {}; const h = authHeader(); if (h) headers.Authorization = h;
+  const h = authHeader();
+  if (!h) return Promise.resolve(getAppointmentsForDate(iso));
+  const headers = { Authorization: h };
   return fetch('/api/bookings?date=' + iso, { headers })
     .then(r => r.ok ? r.json() : Promise.reject())
     .then(list => list.filter(b => b.status !== 'cancelled').map(b => ({ start: b.start, end: b.end, status: b.status || 'pending' })))

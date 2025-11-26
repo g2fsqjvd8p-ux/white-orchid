@@ -57,15 +57,11 @@
       </header>
       <div class="form-grid">
         <div class="full">
-          <p class="small">Enter admin credentials</p>
+          <p class="small">Enter admin passcode. Set it via <code>admin.html?token=YOUR_CODE</code>.</p>
         </div>
-        <label>
-          <span>Username</span>
-          <input type="text" id="admin-user" placeholder="admin">
-        </label>
-        <label>
-          <span>Password</span>
-          <input type="password" id="admin-pass" placeholder="••••••">
+        <label class="full">
+          <span>Passcode</span>
+          <input type="password" id="admin-pass" placeholder="Enter passcode">
         </label>
         <div class="full" id="admin-auth-error" style="color:#ef4444"></div>
       </div>
