@@ -40,6 +40,22 @@
                 <th>Phone</th>
                 <th>Notes</th>
                 <th>Status</th>
+                <th>Operator</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <h2>Operators</h2>
+      <div class="card">
+        <div class="card-body">
+          <table class="schedule-table" id="operators-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -49,27 +65,7 @@
       </div>
     </div>
   </section>
-  <dialog id="admin-auth" class="modal">
-    <form method="dialog" class="modal-content">
-      <header class="modal-header">
-        <h3>Admin Login</h3>
-        <button type="button" class="icon-btn" id="admin-auth-close">✕</button>
-      </header>
-      <div class="form-grid">
-        <div class="full">
-          <p class="small">Enter admin passcode. Set it via <code>admin.html?token=YOUR_CODE</code>.</p>
-        </div>
-        <label class="full">
-          <span>Passcode</span>
-          <input type="password" id="admin-pass" placeholder="Enter passcode">
-        </label>
-        <div class="full" id="admin-auth-error" style="color:#ef4444"></div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn" type="button" id="admin-login-btn">Login</button>
-      </div>
-    </form>
-  </dialog>
+  
   <script src="admin.js" defer></script>
 </body>
 </html>

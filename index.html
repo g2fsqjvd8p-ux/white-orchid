@@ -24,7 +24,6 @@
         <a href="#about" data-i18n="nav_about">About</a>
         <a href="#contact" data-i18n="nav_contact">Contact</a>
         <a href="#schedule" data-i18n="nav_schedule">Today's Availability</a>
-        <a href="admin.html" data-i18n="nav_admin">Admin</a>
         <select id="lang-select" class="lang-select">
           <option value="en">English</option>
           <option value="it">Italiano</option>
@@ -124,6 +123,7 @@
               <tr>
                 <th data-i18n="table_time">Time</th>
                 <th data-i18n="table_status">Status</th>
+                <th data-i18n="table_operator">Operator</th>
               </tr>
             </thead>
             <tbody id="schedule-body"></tbody>
@@ -177,6 +177,10 @@
         <label>
           <span data-i18n="label_service">Service</span>
           <select name="service" id="service-select" required></select>
+        </label>
+        <label>
+          <span data-i18n="label_operator">Operator</span>
+          <select name="operator" id="operator-select" required></select>
         </label>
         <label>
           <span data-i18n="label_duration">Duration</span>
