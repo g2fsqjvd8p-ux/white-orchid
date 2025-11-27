@@ -19,8 +19,20 @@ function initAdmin() {
   document.querySelector('#admin-table').addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-action]'); if (!btn) return;
     const action = btn.getAttribute('data-action'); const id = btn.getAttribute('data-id');
-    if (action === 'delete') { delBooking(id); }
-    else if (action === 'confirm' || action === 'cancel') { updateStatus(id, action === 'confirm' ? 'confirmed' : 'cancelled'); }
+    if (action === 'delete') { 
+      const ok = window.confirm('Are you sure you want to delete this booking?');
+      if (ok) delBooking(id); }
+    else if (action === 'confirm' || action === 'cancel') { 
+      const row = btn.closest('tr');
+      const dateVal = row.querySelector('.admin-date-input')?.value || todayISO();
+      const timeVal = row.querySelector('.admin-time-select')?.value || '';
+      const opVal = row.querySelector('.admin-operator')?.value || '';
+      const list = readBookings();
+      const b = list.find(x => x.id === id);
+      const minutes = Number(b?.minutes) || 60;
+      const summary = `Date: ${dateVal}\nTime: ${timeVal}\nOperator: ${opVal || '-'}\nMinutes: ${minutes}`;
+      const ok = window.confirm(summary);
+      if (ok) updateStatus(id, action === 'confirm' ? 'confirmed' : 'cancelled'); }
     else if (action === 'reschedule') {
       const row = btn.closest('tr');
       const dateVal = row.querySelector('.admin-date-input')?.value || todayISO();
