@@ -126,7 +126,7 @@ const I18N = {
         label_time: "Preferred Time",
         label_service: "Service",
         label_duration: "Duration",
-        label_operator: "Operator",
+        //label_operator: "Operator",
         label_notes: "Notes",
         btn_clear: "Clear",
         btn_submit: "Request Booking",
@@ -264,7 +264,7 @@ const I18N = {
         label_time: "Ora preferita",
         label_service: "Servizio",
         label_duration: "Durata",
-        label_operator: "Operatore",
+        //label_operator: "Operatore",
         label_notes: "Note",
         btn_clear: "Pulisci",
         btn_submit: "Richiedi prenotazione",
@@ -401,7 +401,7 @@ const I18N = {
         label_time: "เวลาที่ต้องการ",
         label_service: "บริการ",
         label_duration: "ระยะเวลา",
-        label_operator: "ผู้ให้บริการ",
+        //label_operator: "ผู้ให้บริการ",
         label_notes: "หมายเหตุ",
         btn_clear: "ล้างข้อมูล",
         btn_submit: "ส่งคำขอจอง",
@@ -532,7 +532,7 @@ const I18N = {
         label_time: "Željeno vreme",
         label_service: "Usluga",
         label_duration: "Trajanje",
-        label_operator: "Operater",
+        //label_operator: "Operater",
         label_notes: "Napomena",
         btn_clear: "Obriši",
         btn_submit: "Pošalji zahtev",
@@ -942,7 +942,6 @@ ${t("label_summary_duration")}: ${
         duration === "0" ? t("addon_label") : duration + " min"
     }
 ${t("label_summary_price")}: ${price}
-${t("label_summary_operator")}: ${operatorName || "-"}
 ${t("label_summary_preferred")}: ${date} ${time}
 ${t("label_summary_notes")}: ${notes || "-"}
 `;
